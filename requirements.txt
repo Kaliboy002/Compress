@@ -1,0 +1,5 @@
+python-telegram-bot==13.7
+pillow==8.3.2  
+moviepy==1.0.3  
+ffmpeg-python==0.2.0
+requests==2.26.0 
