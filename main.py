@@ -1,17 +1,16 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, CallbackContext
 from video import compress_video
 from config import BOT_TOKEN, OWNER_ID
 from utils import log_usage, count_users
 import time
 
-users = set() 
+users = set()
 
-def start(update: Update, context):
+def start(update: Update, context: CallbackContext):
     user_id = update.effective_user.id
     username = update.effective_user.username
-
-    users.add(user_id)
+    users.add(user_id)  
     
     keyboard = [
         [InlineKeyboardButton("Bot Updates", url="https://t.me/alcyonebots")],
@@ -23,26 +22,24 @@ def start(update: Update, context):
         reply_markup=InlineKeyboardMarkup(keyboard)
     )
     
-    # Notify logs group of a new user starting the bot
     log_usage(f"User {username} (ID: {user_id}) started the bot.", context.bot)
 
-def ping(update: Update, context):
-    start_time = time.time() 
+def ping(update: Update, context: CallbackContext):
+    start_time = time.time()  # Record start time
     update.message.reply_text("🏓 Pong!")
-    end_time = time.time() 
-
-    response_time = (end_time - start_time) * 1000
+    end_time = time.time()  # Record end time
+    response_time = (end_time - start_time) * 1000  # Calculate response time in ms
     update.message.reply_text(f"Response time: {int(response_time)} ms")
 
-def compress(update: Update, context):
-    # Present compression options
+def compress(update: Update, context: CallbackContext):
+    # Show inline buttons for compression options
     update.message.reply_text("Choose compression quality:",
                               reply_markup=InlineKeyboardMarkup([
                                   [InlineKeyboardButton("Fast Compression", callback_data='fast')],
                                   [InlineKeyboardButton("High Quality Compression", callback_data='hq')],
                               ]))
 
-def handle_video(update: Update, context):
+def handle_video(update: Update, context: CallbackContext):
     video_file = update.message.video
     user_id = update.effective_user.id
     username = update.effective_user.username
@@ -54,7 +51,7 @@ def handle_video(update: Update, context):
 
         log_usage(f"User {username} (ID: {user_id}) sent a video for compression.", context.bot)
 
-def handle_query(update: Update, context):
+def handle_query(update: Update, context: CallbackContext):
     query = update.callback_query
     query.answer()
     
@@ -71,10 +68,10 @@ def handle_query(update: Update, context):
         log_usage(f"User {username} (ID: {user_id}) chose high quality compression.", context.bot)
     
     context.bot.send_video(chat_id=query.message.chat.id, video=open(compressed_video, 'rb'))
-
+    
     log_usage(f"Total users using the bot: {count_users(users)}", context.bot)
 
-def broadcast(update: Update, context):
+def broadcast(update: Update, context: CallbackContext):
     user_id = update.effective_user.id
     if user_id == OWNER_ID:
         message = " ".join(context.args)
