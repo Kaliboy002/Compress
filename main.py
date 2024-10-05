@@ -5,41 +5,40 @@ from config import BOT_TOKEN, OWNER_ID
 from utils import log_usage, count_users
 import time
 
-users = set()
+users = set()  # Keep track of users who have interacted with the bot
 
 def start(update: Update, context: CallbackContext):
     user_id = update.effective_user.id
     username = update.effective_user.username
-    users.add(user_id)
-
-    image_url = "https://i.imghippo.com/files/hm6zJ1727977742.jpg"
-
-    caption = (
-        "𝖧𝖾𝗅𝗅𝗈 𝗍𝗁𝖾𝗋𝖾!\n"
-        "𝖶𝖾𝗅𝖼𝗈𝗆𝖾 𝗍𝗈 𝗔𝗹𝗰𝘆𝗼𝗻𝗲 𝗩𝗶𝗱𝗲𝗼 𝗖𝗼𝗺𝗽𝗿𝗲𝘀𝘀𝗼𝗿 𝗕𝗈𝘁!! 𝖸𝗈𝗎𝗋 𝗀𝗈-𝗍𝗈 𝗍𝗈𝗈𝗅 𝖿𝗈𝗋 𝖼𝗈𝗆𝗉𝗋𝖾𝗌𝗌𝗂𝗇𝗀 𝗏𝗂𝖽𝖾𝗈𝗌 𝗐𝗂𝗍𝗁𝗈𝗎𝗍 𝗅𝗈𝗌𝗂𝗇𝗀 𝗊𝗎𝖺𝗅𝗂𝗍𝗒! 🎬\n\n"
-        "𝗛𝗼𝘄 𝗱𝗼𝗲𝘀 𝗶𝘁 𝘄𝗼𝗿𝗸?\n"
-        "➥ 𝖩𝗎𝗌𝗍 𝗌𝖾𝗇𝖽 𝗆𝖾 𝖺 𝗏𝗂𝖽𝖾𝗈 𝖿𝗂𝗅𝖾, 𝖺𝗇𝖽 I’𝗅𝗅 𝗍𝖺k𝖾 𝖼𝖺𝗋𝖾 𝗈𝖿 𝗍𝗁𝖾 𝖼𝗈𝗆𝗉𝗋𝖾𝗌𝗌𝗂𝗈𝗇!\n"
-        "ⓘ 𝖬𝖺𝗄𝖾 𝗌𝗎𝗋𝖾 𝗒𝗈𝗎'𝗋𝖾 𝗌𝗎𝖻𝗌𝖼𝗋𝗂𝖻𝖾𝖽 𝗍𝗈 𝗈𝗎𝗋 𝗈ff𝗂𝖼𝗂𝖺𝗅 𝖼𝗁𝖺𝗇𝗇𝖾𝗅 𝖺𝗇𝖽 𝗌𝗎𝗉𝗉𝗈rt 𝖼𝗁𝖺𝗍 𝗍𝗈 𝗀𝖾𝗍 𝗍𝗁𝖾 𝖻𝖾𝗌𝗍 𝖾𝗑𝗉𝖾𝗋𝗂𝖾𝗇𝖼𝖾!\n\n"
-        "👾 𝖫𝖾𝗍𝗌 𝖣𝗂𝗏𝖾 𝗂𝗇 𝖼𝗈𝗆𝗉𝗋𝖾𝗌𝗌 𝗍𝗁𝗈𝗌𝖾 𝗏𝗂𝖽𝖾𝗈𝗌!!"
+    users.add(user_id)  # Track users
+    
+    # Inline buttons for updates and support
+    keyboard = [
+        [InlineKeyboardButton("Bot Updates", url="https://t.me/alcyonebots")],
+        [InlineKeyboardButton("Bot Support", url="https://t.me/alcyone_support")]
+    ]
+    
+    update.message.reply_text(
+        "Welcome to Alcyone Video Compressor Bot! Choose an option:",
+        reply_markup=InlineKeyboardMarkup(keyboard)
     )
-
-    # Send the image with the caption
-    context.bot.send_photo(chat_id=update.effective_chat.id, photo=image_url, caption=caption)
-
-    log_usage(f"𝖴𝗌𝖾𝗋 {username} \nID: {user_id} 𝗌𝗍𝖺𝗋𝗍𝖾𝖽 𝗍𝗁𝖾 𝖻𝗈𝗍", context.bot) 
+    
+    # Send logs to the logs group
+    log_usage(f"User {username} (ID: {user_id}) started the bot.", context.bot)
 
 def ping(update: Update, context: CallbackContext):
-    start_time = time.time() 
-    update.message.reply_text("🏓 𝖯𝗈𝗇𝗀!")
-    end_time = time.time() 
-    response_time = (end_time - start_time) * 1000 
+    start_time = time.time()  # Record start time
+    update.message.reply_text("🏓 Pong!")
+    end_time = time.time()  # Record end time
+    response_time = (end_time - start_time) * 1000  # Calculate response time in ms
     update.message.reply_text(f"Response time: {int(response_time)} ms")
 
 def compress(update: Update, context: CallbackContext):
-    update.message.reply_text("𝖢𝗁𝗈𝗈𝗌𝖾 𝖼𝗈𝗆𝗉𝗋𝖾𝗌𝗌𝗂𝗈𝗇 𝗊𝗎𝖺𝗅𝗂𝗍𝗒:",
+    # Show inline buttons for compression options
+    update.message.reply_text("Choose compression quality:",
                               reply_markup=InlineKeyboardMarkup([
-                                  [InlineKeyboardButton("𝖥𝖺𝗌𝗍 𝖢𝗈𝗆𝗉𝗋𝖾𝗌𝗌𝗂𝗈𝗇", callback_data='fast')],
-                                  [InlineKeyboardButton("𝖧𝗂𝗀𝗁 𝖰𝗎𝖺𝗅𝗂𝗍𝗒 𝖢𝗈𝗆𝗉𝗋𝖾𝗌𝗌𝗂𝗈𝗇", callback_data='hq')],
+                                  [InlineKeyboardButton("Fast Compression", callback_data='fast')],
+                                  [InlineKeyboardButton("High Quality Compression", callback_data='hq')],
                               ]))
 
 def handle_video(update: Update, context: CallbackContext):
@@ -50,9 +49,11 @@ def handle_video(update: Update, context: CallbackContext):
     if video_file:
         video_path = video_file.get_file().download()
 
+        # Show compression options
         compress(update, context)
 
-        log_usage(f"𝖴𝗌𝖾𝗋 {username}\n 𝖴𝗌𝖾𝗋𝖨𝖣: {user_id}\n𝖲𝖾𝗇𝗍 𝖺 𝗏𝗂𝖽𝖾𝗈 𝖿𝗈𝗋 𝖼𝗈𝗆𝗉𝗋𝖾𝗌𝗌𝗂𝗈𝗇 👾", context.bot)
+        # Log the video upload event
+        log_usage(f"User {username} (ID: {user_id}) sent a video for compression.", context.bot)
 
 def handle_query(update: Update, context: CallbackContext):
     query = update.callback_query
@@ -62,35 +63,37 @@ def handle_query(update: Update, context: CallbackContext):
     username = query.from_user.username
 
     if query.data == 'fast':
-        query.edit_message_text(text="𝖢𝗈𝗆𝗉𝗋𝖾𝗌𝗌𝗂𝗇𝗀 𝗏𝗂𝖽𝖾𝗈 𝗐𝗂𝗍𝗁 𝖿𝖺𝗌𝗍 𝗌𝖾𝗍𝗍𝗂𝗇𝗀𝗌...")
+        query.edit_message_text(text="Compressing video with fast settings...")
         compressed_video = compress_video(query.message, fast=True)
-        log_usage(f"𝖴𝗌𝖾𝗋 {username} \n𝖴𝗌𝖾𝗋𝖨𝖣: {user_id} \n𝖢𝗁𝗈𝗌𝖾 𝖿𝖺𝗌𝗍 𝖼𝗈𝗆𝗉𝗋𝖾𝗌𝗌𝗂𝗈𝗇.", context.bot)
+        log_usage(f"User {username} (ID: {user_id}) chose fast compression.", context.bot)
     elif query.data == 'hq':
-        query.edit_message_text(text="𝖢𝗈𝗆𝗉𝗋𝖾𝗌𝗌𝗂𝗇𝗀 𝗏𝗂𝖽𝖾𝗈 𝗐𝗂𝗍𝗁 𝗁𝗂𝗀𝗁 𝗊𝗎𝖺𝗅𝗂𝗍𝗒 𝗌𝖾𝗍𝗍𝗂𝗇𝗀𝗌...")
+        query.edit_message_text(text="Compressing video with high quality settings...")
         compressed_video = compress_video(query.message, fast=False)
-        log_usage(f"𝖴𝗌𝖾𝗋 {username}\n𝖴𝗌𝖾𝗋𝖨𝖣: {user_id} 𝖢𝗁𝗈𝗌𝖾 𝗁𝗂𝗀𝗁 𝗊𝗎𝖺𝗅𝗂𝗍𝗒 𝖼𝗈𝗆𝗉𝗋𝖾𝗌𝗌𝗂𝗈𝗇.", context.bot)
+        log_usage(f"User {username} (ID: {user_id}) chose high quality compression.", context.bot)
     
+    # Send the compressed video back to the user
     context.bot.send_video(chat_id=query.message.chat.id, video=open(compressed_video, 'rb'))
-    
-    log_usage(f"𝖳𝗈𝗍𝖺𝗅 𝗎𝗌𝖾𝗋𝗌 𝗎𝗌𝗂𝗇𝗀 𝗍𝗁𝖾 𝖻𝗈𝗍: {count_users(users)}", context.bot)
+
+    # Update log with user count
+    log_usage(f"Total users using the bot: {count_users(users)}", context.bot)
 
 def broadcast(update: Update, context: CallbackContext):
     user_id = update.effective_user.id
     if user_id == OWNER_ID:
         message = " ".join(context.args)
         if not message:
-            update.message.reply_text("𝖯𝗅𝖾𝖺𝗌𝖾 𝗉𝗋𝗈𝗏𝗂𝖽𝖾 𝖺 𝗆𝖾𝗌𝗌𝖺𝗀𝖾 𝗍𝗈 𝖻𝗋𝗈𝖺𝖽𝖼𝖺𝗌𝗍.")
+            update.message.reply_text("Please provide a message to broadcast.")
             return
 
         for user in users:
             try:
                 context.bot.send_message(chat_id=user, text=message)
             except Exception as e:
-                log_usage(f"𝖥𝖺𝗂𝗅𝖾𝖽 𝗍𝗈 𝗌𝖾𝗇𝖽 𝗆𝖾𝗌𝗌𝖺𝗀𝖾 𝗍𝗈 {user}: {e}", context.bot)
+                log_usage(f"Failed to send message to {user}: {e}", context.bot)
         
-        update.message.reply_text("𝖬𝖾𝗌𝗌𝖺𝗀𝖾 𝖻𝗋𝗈𝖺𝖽𝖼𝖺𝗌𝗍𝖾𝖽.")
+        update.message.reply_text("Message broadcasted.")
     else:
-        update.message.reply_text("𝖮𝗇𝗅𝗒 𝖮𝗐𝗇𝖾𝗋 𝖼𝖺𝗇 𝗎𝗌𝖾 𝗍𝗁𝗂𝗌 𝖼𝗈𝗆𝗆𝖺𝗇𝖽!!")
+        update.message.reply_text("You are not authorized to use this command.")
 
 def main():
     updater = Updater(BOT_TOKEN, use_context=True)
