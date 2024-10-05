@@ -7,6 +7,8 @@ import time
 
 users = set()
 
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+
 def start(update: Update, context: CallbackContext):
     user_id = update.effective_user.id
     username = update.effective_user.username
@@ -16,18 +18,29 @@ def start(update: Update, context: CallbackContext):
 
     caption1 = (
         "𝖧𝖾𝗅𝗅𝗈 𝗍𝗁𝖾𝗋𝖾!\n"
-        "𝖶𝖾𝗅𝖼𝗈𝗆𝖾 𝗍𝗈 𝗔𝗹𝗰𝘆𝗼𝗻𝗲 𝗩𝗶𝗱𝗲𝗼 𝗖𝗼𝗺𝗽𝗿𝗲𝘀𝘀𝗼𝗿 𝗕𝗈𝘁!! 𝖸𝗈𝗎𝗋 𝗀𝗈-𝗍𝗈 𝗍𝗈𝗈𝗅 𝖿𝗈𝗋 𝖼𝗈𝗆𝗉𝗋𝖾𝗌𝗌𝗂𝗇𝗀 𝗏𝗂𝖽𝖾𝗈𝗌 𝗐𝗂𝗍𝗁𝗈𝗎𝗍 𝗅𝗈𝗌𝗂𝗇𝗀 𝗊𝗎𝖺𝗅𝗂𝗍𝗒! 🎬\n"
+        "𝖶𝖾𝗅𝖼𝗈𝗺𝖾 𝗍𝗈 𝗔𝗹𝗰𝘆𝗼𝗻𝗲 𝗩𝗶𝗱𝗲𝗼 𝗖𝗼𝗺𝗽𝗿𝗲𝘀𝘀𝗼𝗿 𝗕𝗈𝘁!! 𝖸𝗈𝗎𝗋 𝗀𝗈-𝗍𝗈 𝗍𝗈𝗈𝗹 𝖿𝗈𝗋 𝖼𝗈𝗆𝗉𝗋𝖾𝗌𝗌𝗂𝗇𝗀 𝗏𝗂𝖽𝖾𝗈𝗌 𝗐𝗂𝗍𝗁𝗈𝗎𝗍 𝗅𝗈𝗌𝗂𝗇𝗀 𝗊𝗎𝖺𝗅𝗂𝗍𝗒! 🎬\n"
         "➥ 𝗝𝗎𝗌𝗍 𝗌𝖾𝗇𝖽 𝗺𝖾 𝖺 𝗏𝗂𝖽𝖾𝗈 𝖿𝗂𝗅𝖾 𝖺𝗻𝗱 I'𝗅𝗅 𝗍𝖺𝗸𝖾 𝖼𝖺𝗋𝖾 𝗈𝖿 𝗍𝗁𝖾 𝖼𝗈𝗆𝗉𝗋𝖾𝗌𝗌𝗂𝗈𝗇!\n"
     )
 
     caption2 = (
-          "ⓘ 𝖬𝖺𝗄𝖾 𝗌𝗎𝗋𝖾 𝗒𝗈𝗎'𝗋𝖾 𝗌𝗎𝖻𝗌𝖼𝗋𝗂𝖻𝖾𝖽 𝗍𝗈 𝗈𝗎𝗋 𝗈𝖋𝖿𝗂𝖼𝗂𝖺𝗅 𝖼𝗁𝖺𝗇𝗇𝖾𝗅 𝖺𝗇𝖽 𝗌𝗎𝗉𝗉𝗈𝗿𝗍 𝖼𝗁𝖺𝗍 𝗍𝗈 𝗀𝖾𝗍 𝗍𝗁𝖾 𝖻𝖾𝗌𝗍 𝖾𝗑𝗉𝖾𝗋𝗂𝖾𝗇𝖼𝖾!\n\n"
+        "ⓘ 𝖬𝖺𝗸𝖾 𝗌𝗎𝗯𝗌𝖼𝗋𝗂𝖻𝖾𝖽 𝗍𝗈 𝗈𝗎𝗋 𝗈𝖋𝖿𝗂𝖼𝗂𝖺𝗅 𝖼𝗁𝖺𝗇𝗇𝖾𝗅 𝖺𝗇𝖽 𝗌𝗎𝗉𝗉𝗈𝗋𝗍 𝖼𝗁𝖺𝗍 𝗍𝗈 𝗀𝖾𝗍 𝗍𝗁𝖾 𝖻𝖾𝗌𝗍 𝖾𝗑𝗽𝗲𝗋𝗂𝖾𝗇𝗰𝖾!\n\n"
         "👾 𝖫𝖾𝗍𝗌 𝖣𝗂𝗏𝖾 𝗂𝗇 𝖼𝗈𝗆𝗉𝗋𝖾𝗌𝗌 𝗍𝗁𝗈𝗌𝖾 𝗏𝗂𝖽𝖾𝗈𝗌!!"
     )
 
+    # Send the image with the first part of the caption
     context.bot.send_photo(chat_id=update.effective_chat.id, photo=image_url, caption=caption1)
-    
-    context.bot.send_message(chat_id=update.effective_chat.id, text=caption2)
+
+    # Create inline buttons
+    keyboard = [
+        [
+            InlineKeyboardButton("𝖡𝗈𝗍 𝖴𝗉𝖽𝖺𝗍𝖾𝗌", url="https://t.me/AlcyoneBots"),
+            InlineKeyboardButton("𝖡𝗈𝗍 𝖲𝗎𝗉𝗉𝗈𝗋𝗍", url="https://t.me/Alcyone_Support"),
+        ]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    # Send the second part of the caption with inline buttons
+    context.bot.send_message(chat_id=update.effective_chat.id, text=caption2, reply_markup=reply_markup)
 
     log_usage(f"𝖴𝗌𝖾𝗋 {username} \nID: {user_id} 𝗌𝗍𝖺𝗋𝗍𝖾𝖽 𝗍𝗁𝖾 𝖻𝗈𝗍", context.bot)
 def ping(update: Update, context: CallbackContext):
