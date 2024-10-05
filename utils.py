@@ -1,6 +1,6 @@
 import os
 
-LOG_FILE = "Compress_logs.txt"
+LOG_FILE = "bot_logs.txt"
 
 def log_usage(message, bot=None):
     """Logs bot usage to a file and sends it to the logs group."""
